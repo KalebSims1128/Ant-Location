@@ -1,0 +1,101 @@
+# Define grid dimensions
+n = 7  # number of rows
+m = 5  # number of columns
+
+# Initialize the grid matrix with zeros
+matrix = [[0 for _ in range(m)] for _ in range(n)]
+
+# Print the initial grid (optional)
+for row in matrix:
+    print(row)
+
+# Function to calculate the final position of a drone after H hours
+def drone_movement(N, M, i, j, H):
+    # Initial movement direction set towards top-right: (-1 row, +1 column)
+    dir_i = -1
+    dir_j = 1
+    
+    # Update drone's position hour by hour
+    for _ in range(H):
+        # Check for boundary at the top of the grid, change direction downward
+        if i == 0 and dir_i == -1:
+            dir_i = +1
+        
+        # Check for boundary at the bottom of the grid, change direction upward
+        elif i == N - 1 and dir_i == 1:
+            dir_i = -1
+        
+        # Check for boundary on the left, change direction to the right
+        if j == 0 and dir_j == -1:
+            dir_j = +1
+        
+        # Check for boundary on the right, change direction to the left
+        elif j == M - 1 and dir_j == 1:
+            dir_j = -1
+        
+        # Move the drone in the current direction
+        i += dir_i
+        j += dir_j
+
+    # Return the final position after H hours
+    return i, j
+
+# Function to read input, process each test case, and write results to a file
+def file_reader(user_input):
+    # List to store final positions of drones
+    list = []
+    
+    # Handle file input mode
+    if user_input == 'file':
+        input_file = input("Enter the input file name: ").strip()
+        
+        # Read input from the specified file
+        with open(input_file, 'r') as infile:
+            # First line gives the number of test cases
+            T = int(infile.readline().strip())
+            
+            # Process each test case
+            for _ in range(T):
+                # Read grid size, initial position, and hours
+                N, M, i, j, H = map(int, infile.readline().strip().split())
+                
+                # Calculate final position using drone_movement
+                cord = drone_movement(N, M, i, j, H)
+                
+                # Store result as "i j" format in the list
+                list.append(f"{cord[0]} {cord[1]}")
+                print(cord)
+    
+    # Handle user input mode
+    elif user_input == 'user':
+        print("Number of test cases: ")
+        T = int(input().strip())
+        
+        # Process each test case
+        for _ in range(T):
+            # Read grid size, initial position, and hours from user
+            N, M, i, j, H = map(int, input().strip().split())
+            
+            # Calculate final position using drone_movement
+            cord = drone_movement(N, M, i, j, H)
+            
+            # Format result as "i j" and add to list
+            results = f"{cord[0]} {cord[1]}"
+            list.append(results)
+            print(results)
+    
+    # Write all results to the output file
+    with open('output.txt', 'w') as outfile:
+        outfile.write("\n".join(list) + "\n")
+
+# Main function to choose input mode and initiate file reading
+def main():
+    # Prompt user to select between file and user input modes
+    user_input = input("Would you like to use 'file' or 'user' input? ").strip().lower()
+    
+    # Call file_reader with the selected input mode
+    file_reader(user_input)
+
+# Run the main function when script is executed directly
+if __name__ == "__main__":
+    main()
